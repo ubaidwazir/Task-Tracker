@@ -10,7 +10,7 @@
                 <h2 class="h4 mb-0">Pending Tasks</h2>
                 <div class="d-flex align-items-center">
                     <span class="badge badge-pill badge-warning mr-2">{{ user_pending_tasks.count }}</span>
-                    <a href="#" class="btn btn-sm btn-outline-secondary">See all &rarr;</a>
+                    <a href="{% url 'project:user_pending_tasks' %}" class="btn btn-sm btn-outline-secondary">See all &rarr;</a>
                 </div>
             </div>
             {% if user_pending_tasks %}
@@ -48,7 +48,7 @@
                 <h2 class="h4 mb-0">In Progress</h2>
                 <div class="d-flex align-items-center">
                     <span class="badge badge-pill badge-info mr-2">{{ user_in_progress_tasks.count }}</span>
-                    <a href="#" class="btn btn-sm btn-outline-secondary">See all &rarr;</a>
+                    <a href="{% url 'project:user_in_progress_tasks' %}" class="btn btn-sm btn-outline-secondary">See all &rarr;</a>
                 </div>
             </div>
             {% if user_in_progress_tasks %}
@@ -87,7 +87,7 @@
                 <h2 class="h4 mb-0">Completed Tasks</h2>
                 <div class="d-flex align-items-center">
                     <span class="badge badge-pill badge-success mr-2">{{ user_completed_tasks.count }}</span>
-                    <a href="#" class="btn btn-sm btn-outline-secondary">See all &rarr;</a>
+                    <a href="{% url 'project:user_completed_tasks' %}" class="btn btn-sm btn-outline-secondary">See all &rarr;</a>
                 </div>
             </div>
             {% if user_completed_tasks %}
