@@ -14,13 +14,14 @@ class Task(models.Model):
     description = models.TextField(blank=True)
     due_date = models.DateTimeField()
     date_created = models.DateTimeField(auto_now_add=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
     status = models.CharField(max_length=20, choices=TaskChoices, default=TaskChoices.PENDING)
 
     def __str__(self):
         return self.title
 
     class Meta:
-        ordering = ["-date_created"]
+        ordering = ["-due_date"]
 
     
 
