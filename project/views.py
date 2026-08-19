@@ -28,3 +28,8 @@ def task_detail_page(request, id):
         "task_assigned_to":task_assigned_to,
     }
     return render(request, "project/task_detail.html", context)
+
+
+def task_delete(request, id):
+    Task.objects.get(id=id).delete()
+    return redirect("web:home")

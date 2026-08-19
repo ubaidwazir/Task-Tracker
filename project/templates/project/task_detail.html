@@ -126,7 +126,7 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancel</button>
                         <!-- this becomes a POST form once the delete view exists -->
-                        <a href="#" class="btn btn-sm btn-danger">Delete task</a>
+                        <a href="{% url 'project:delete_task' task.id %}" class="btn btn-sm btn-danger">Delete task</a>
                     </div>
                 </div>
             </div>
