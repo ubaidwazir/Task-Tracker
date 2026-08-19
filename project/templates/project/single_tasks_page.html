@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}
+    {{ status_label }} Task
+{% endblock title %}
+{% block content %}
+    <div class="container my-4">
+        <!-- ==================== PAGE HEADER ==================== -->
+        <a href="{% url 'web:home' %}" class="btn btn-sm btn-link pl-0 mb-2">&larr; Back to dashboard</a>
+        <div class="d-flex align-items-center justify-content-between border-bottom pb-2 mb-3 flex-wrap">
+            <div class="d-flex align-items-center mb-2 mb-sm-0">
+                <!-- page title: the human label for the status -->
+                <h1 class="h3 mb-0 mr-2">{{ status_label }} Tasks</h1>
+                <!-- swap badge-secondary for warning / info / success per status -->
+                <span class="badge badge-pill badge-secondary">{{user_tasks.count}}</span>
+            </div>
+            <a href="#" class="btn btn-sm btn-primary">+ New Task</a>
+        </div>
+        <!-- ==================== TOOLBAR ==================== -->
+        <div class="row mb-3">
+            <div class="col-md-6 mb-2">
+                <input type="search" class="form-control" placeholder="Search tasks&hellip;">
+            </div>
+            <div class="col-md-4 col-lg-3 mb-2 ml-md-auto">
+                <select class="form-control">
+                    <option>Date &mdash; soonest first</option>
+                    <option>Date &mdash; latest first</option>
+                    <option>Recently added</option>
+                    <option>Title A&ndash;Z</option>
+                </select>
+            </div>
+        </div>
+        <!-- ==================== TASK TABLE ==================== -->
+        <!-- wrap this block so it only renders when there are rows -->
+        {% if user_tasks %}
+            <div class="table-responsive shadow-sm mb-3">
+                <table class="table table-hover bg-white mb-0">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">Task</th>
+                            <th scope="col" class="d-none d-lg-table-cell">Description</th>
+                            <!-- header reads "Due" for pending / in progress, "Completed" for completed -->
+                            {% if status == "pending" or status == "in_progress" %}
+                                <th scope="col" class="text-nowrap">Due</th>
+                            {% else %}
+                                <th scope="col" class="text-nowrap">Completed</th>
+                            {% endif %}
+                                <th scope="col">Status</th>
+                                <th scope="col" class="text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- ▼ loop this row once per assignment ▼ -->
+                            {% for task in user_tasks %}
+                                <tr>
+                                    <td class="align-middle font-weight-bold">{{ task.task.title }}</td>
+                                    <td class="align-middle text-muted small d-none d-lg-table-cell">{{ task.task.description }}</td>
+                                    <td class="align-middle text-nowrap">
+                                        {% if status == "pending" or status == "in_progress" %}
+                                            <small>{{ task.task.due_date }}</small>
+                                        {% else %}
+                                            <small>{{ task.task.completed_at }}</small>
+                                        {% endif %}
+                                        </td>
+                                        <td class="align-middle">
+                                            <!-- swap badge-secondary for warning / info / success per status -->
+                                            {% if status == "pending" %}
+                                            <span class="badge badge-warning">{{ status_label }}</span>
+                                            {% elif status == "in_progress" %}
+                                                <span class="badge badge-info">{{ status_label }}</span>
+                                            {% else %}
+                                                <span class="badge badge-success">{{ status_label }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="align-middle text-right text-nowrap">
+                                            <a href="#" class="btn btn-sm btn-outline-primary">View</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                <!-- ▲ end of the repeated row ▲ -->
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <!-- ==================== EMPTY STATE ==================== -->
+                    <!-- show this instead of the table when there are no rows -->
+                    <div class="text-center text-muted border rounded py-5 mb-3">
+                        <p class="mb-1">No tasks here.</p>
+                        <small>Tasks with this status will show up here.</small>
+                    </div>
+                {% endif %}
+                <!-- ==================== PAGINATION ==================== -->
+                <nav aria-label="Task list pages">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1">Previous</a>
+                        </li>
+                        <li class="page-item active">
+                            <a class="page-link" href="#">1</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">2</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">3</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        {% endblock content %}
