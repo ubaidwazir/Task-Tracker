@@ -11,11 +11,17 @@
             <div class="mr-3 mb-2 mb-md-0">
                 <h1 class="h3 mb-2">{{ task.title }}</h1>
                 <!-- swap badge-warning for info / success per status -->
-                <span class="badge badge-warning">{{ task.get_status_display }}</span>
+                {% if task.statue == "pending" %}
+                    <span class="badge badge-warning">{{ task.get_status_display }}</span>
+                {% elif task.statue == "in_progress" %}
+                    <span class="badge badge-info">{{ task.get_status_display }}</span>
+                {% else %}
+                    <span class="badge badge-success">{{ task.get_status_display }}</span>
+                {% endif %}
                 <small class="text-muted ml-2">{{ task.date_created }}</small>
             </div>
             <div class="text-nowrap">
-                <a href="#" class="btn btn-sm btn-outline-secondary">Edit</a>
+                <a href="{% url 'project:edit_task' task.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
                 <button type="button"
                         class="btn btn-sm btn-outline-danger"
                         data-toggle="modal"
@@ -78,17 +84,17 @@
                 <div class="card shadow-sm">
                     <div class="card-header bg-white d-flex justify-content-between align-items-center">
                         <span class="font-weight-bold">Assigned to</span>
-                        <span class="badge badge-pill badge-secondary">{{task_assigned_to.count}}</span>
+                        <span class="badge badge-pill badge-secondary">{{ task_assigned_to.count }}</span>
                     </div>
                     <ul class="list-group list-group-flush">
                         <!-- ▼ loop this item once per assignment ▼ -->
                         {% for task in task_assigned_to %}
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <div>
-                                    <div>{{task.user.username}}</div>
-                                    <small class="text-muted">{{task.assigned_at}}</small>
+                                    <div>{{ task.user.username }}</div>
+                                    <small class="text-muted">{{ task.assigned_at }}</small>
                                 </div>
-                                <a href="#" class="btn btn-sm btn-outline-danger">Remove</a>
+                                <a href="{% url "project:edit_task" task.task.id %}" class="btn btn-sm btn-outline-danger">Remove</a>
                             </li>
                         {% endfor %}
                         <!-- ▲ end of the repeated item ▲ -->
@@ -98,7 +104,7 @@
                         <p class="mb-0 small">Nobody is assigned to this task yet.</p>
                     </div>
                     <div class="card-footer bg-white">
-                        <a href="#" class="btn btn-sm btn-outline-primary btn-block">+ Assign someone</a>
+                        <a href="{% url "project:edit_task" task.id %}" class="btn btn-sm btn-outline-primary btn-block">+ Assign someone</a>
                     </div>
                 </div>
             </div>
@@ -126,7 +132,8 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancel</button>
                         <!-- this becomes a POST form once the delete view exists -->
-                        <a href="{% url 'project:delete_task' task.id %}" class="btn btn-sm btn-danger">Delete task</a>
+                        <a href="{% url 'project:delete_task' task.id %}"
+                           class="btn btn-sm btn-danger">Delete task</a>
                     </div>
                 </div>
             </div>

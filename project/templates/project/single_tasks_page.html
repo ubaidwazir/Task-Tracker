@@ -13,7 +13,7 @@
                 <!-- swap badge-secondary for warning / info / success per status -->
                 <span class="badge badge-pill badge-secondary">{{user_tasks.count}}</span>
             </div>
-            <a href="#" class="btn btn-sm btn-primary">+ New Task</a>
+            <a href="{% url 'project:create_task' %}" class="btn btn-sm btn-primary">+ New Task</a>
         </div>
         <!-- ==================== TOOLBAR ==================== -->
         <div class="row mb-3">
@@ -72,7 +72,7 @@
                                             {% endif %}
                                         </td>
                                         <td class="align-middle text-right text-nowrap">
-                                            <a href="#" class="btn btn-sm btn-outline-primary">View</a>
+                                            <a href="{% url 'project:task_detail' task.task.id %}" class="btn btn-sm btn-outline-primary">View</a>
                                         </td>
                                     </tr>
                                 {% endfor %}

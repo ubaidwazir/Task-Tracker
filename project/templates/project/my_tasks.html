@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block title %}
+    My Tasks
+{% endblock title %}
+{% block content %}
+    <div class="container my-4">
+        <!-- ==================== PAGE HEADER ==================== -->
+        <a href="{% url "web:home" %}" class="btn btn-sm btn-link pl-0 mb-2">&larr; Back to dashboard</a>
+        <div class="d-flex align-items-center justify-content-between border-bottom pb-2 mb-3 flex-wrap">
+            <div class="d-flex align-items-center mb-2 mb-sm-0">
+                <h1 class="h3 mb-0 mr-2">My Tasks</h1>
+                <span class="badge badge-pill badge-secondary">{{ tasks.count }}</span>
+            </div>
+            <a href="{% url "project:create_task" %}" class="btn btn-sm btn-primary">+ New Task</a>
+        </div>
+        <p class="text-muted small mb-3">Every task you created, whoever it&rsquo;s assigned to.</p>
+        <!-- ==================== STATUS FILTER ==================== -->
+        <ul class="nav nav-pills mb-3 flex-wrap">
+            <li class="nav-item mr-2 mb-2">
+                <a class="nav-link active" href="#">All <span class="badge badge-light ml-1">{{ tasks.count }}</span></a>
+            </li>
+            <li class="nav-item mr-2 mb-2">
+                <a class="nav-link" href="#">Pending <span class="badge badge-light ml-1">{{ pending_tasks.count }}</span></a>
+            </li>
+            <li class="nav-item mr-2 mb-2">
+                <a class="nav-link" href="#">In Progress <span class="badge badge-light ml-1">{{ in_progress_tasks.count }}</span></a>
+            </li>
+            <li class="nav-item mb-2">
+                <a class="nav-link" href="#">Completed <span class="badge badge-light ml-1">{{ completed_tasks.count }}</span></a>
+            </li>
+        </ul>
+        <!-- ==================== TOOLBAR ==================== -->
+        <div class="row mb-3">
+            <div class="col-md-6 mb-2">
+                <input type="search"
+                       class="form-control"
+                       placeholder="Search my tasks&hellip;">
+            </div>
+            <div class="col-md-4 col-lg-3 mb-2 ml-md-auto">
+                <select class="form-control">
+                    <option>Due date &mdash; soonest first</option>
+                    <option>Due date &mdash; latest first</option>
+                    <option>Recently created</option>
+                    <option>Title A&ndash;Z</option>
+                </select>
+            </div>
+        </div>
+        <!-- ==================== TASK TABLE ==================== -->
+        <!-- wrap this block so it only renders when there are rows -->
+        {% if tasks %}
+            <div class="table-responsive shadow-sm mb-3">
+                <table class="table table-hover bg-white mb-0">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">Task</th>
+                            <th scope="col" class="d-none d-lg-table-cell">Description</th>
+                            <th scope="col" class="text-nowrap">Due</th>
+                            <th scope="col">Status</th>
+                            <th scope="col" class="text-center text-nowrap d-none d-md-table-cell">Assigned</th>
+                            <th scope="col" class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- ▼ loop this row once per task ▼ -->
+                        {% for task in tasks %}
+                            <tr>
+                                <td class="align-middle font-weight-bold">
+                                    <a href="#" class="text-dark">{{ task.title }}</a>
+                                </td>
+                                <td class="align-middle text-muted small d-none d-lg-table-cell">{{ task.description }}</td>
+                                <td class="align-middle text-nowrap">
+                                    <small>{{ task.due_date }}</small>
+                                </td>
+                                <td class="align-middle">
+                                    <!-- badge colour follows this row's own status -->
+                                    {% if task.status == "pending" %}
+                                        <span class="badge badge-warning">{{ task.get_status_display }}</span>
+                                    {% elif task.status == "in_progress" %}
+                                        <span class="badge badge-info">{{ task.get_status_display }}</span>
+                                    {% else %}
+                                        <span class="badge badge-success">{{ task.get_status_display }}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="align-middle text-center d-none d-md-table-cell">
+                                    <span class="badge badge-pill badge-light border">2</span>
+                                </td>
+                                <td class="align-middle text-right text-nowrap">
+                                    <a href="{% url "project:task_detail" task.id %}" class="btn btn-sm btn-outline-primary">View</a>
+                                    <a href="{% url "project:edit_task" task.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <!-- ▲ end of the repeated row ▲ -->
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+        <!-- ==================== EMPTY STATE ==================== -->
+        <!-- show this instead of the table when you own no tasks -->
+        <div class="text-center text-muted border rounded py-5 mb-3 d-none">
+            <p class="mb-1">You haven&rsquo;t created any tasks yet.</p>
+            <small>Tasks you create will be listed here.</small>
+            <div class="mt-3">
+                <a href="#" class="btn btn-sm btn-primary">Create your first task</a>
+            </div>
+        </div>
+        <!-- ==================== PAGINATION ==================== -->
+        <nav aria-label="My tasks pages">
+            <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                </li>
+                <li class="page-item active">
+                    <a class="page-link" href="#">1</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">2</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+{% endblock content %}

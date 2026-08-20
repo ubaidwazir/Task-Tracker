@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django.contrib.auth.models import User
 
 class TaskChoices(models.TextChoices):
@@ -23,6 +24,10 @@ class Task(models.Model):
     class Meta:
         ordering = ["-due_date"]
 
+
+    def get_absolute_url(self):
+        return reverse("project:task_detail", kwargs={"pk": self.pk})
+    
     
 
 class TaskAssignment(models.Model):

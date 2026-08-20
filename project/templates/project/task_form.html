@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block title %}
+    Create Task
+{% endblock title %}
+{% block content %}
+    <div class="container my-4">
+        <!-- ==================== BACK LINK ==================== -->
+        <a href="{% url "web:home" %}" class="btn btn-sm btn-link pl-0 mb-2">&larr; Back to tasks</a>
+        <!-- ==================== PAGE HEADER ==================== -->
+        <div class="border-bottom pb-2 mb-4">
+            <!-- reads "Create Task" when adding, "Edit Task" when updating -->
+            <h1 class="h3 mb-0">Create Task</h1>
+        </div>
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- ==================== NON-FIELD ERRORS ==================== -->
+                <div class="alert alert-danger d-none" role="alert">
+                    <strong>That didn&rsquo;t work.</strong> Please check the fields below.
+                </div>
+                <!-- ============================================================ -->
+                <!-- FORM 1 - TASK DETAILS                                        -->
+                <!-- ============================================================ -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white py-3">
+                        <span class="font-weight-bold">Task details</span>
+                        <small class="text-muted d-block">Title, description, deadline and status.</small>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ task_create|crispy }}
+                            <div class="d-flex justify-content-end border-top pt-3 mt-3">
+                                <a href="{% url "web:home" %}" class="btn btn-outline-secondary mr-2">Cancel</a>
+                                <!-- named so the view can tell which form was posted -->
+                                <button type="submit" name="save_task" class="btn btn-primary">Save task</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- ============================================================ -->
+                <!-- FORM 2 - ASSIGNMENTS                                         -->
+                <!-- ============================================================ -->
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-start">
+                        <div>
+                            <span class="font-weight-bold">Assigned people</span>
+                            <small class="text-muted d-block">Saves on its own &mdash; the task details above aren&rsquo;t touched.</small>
+                        </div>
+                        <span class="badge badge-pill badge-secondary">{{assigned_tasks.count}}</span>
+                    </div>
+                    <!-- ---------- add someone ---------- -->
+                    <div class="card-body bg-light border-bottom">
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ assigned_to|crispy }}
+                            <div class="d-flex justify-content-end">
+                                <button type="submit" name="save_assignment" class="btn btn-outline-primary">Assign</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- ---------- who is already assigned ---------- -->
+                    {% if assigned_tasks %}
+                    <ul class="list-group list-group-flush">
+                        <!-- loop this item once per current assignment -->
+                        {% for assignment in assigned_tasks  %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center py-2">
+                            <div>
+                                <span>{{assignment.user.username}}</span>
+                                <small class="text-muted ml-2">assigned {{assignment.assigned_at}}6</small>
+                            </div>
+                            <form method="post" class="mb-0">
+                                {% csrf_token %}
+                                <button type="submit"
+                                        name="remove_assignment"
+                                        value="{{assignment.user.id}}"
+                                        class="btn btn-sm btn-outline-danger">Remove</button>
+                            </form>
+                        </li>
+                        {% endfor %}
+                        <!-- end of the repeated item -->
+                    </ul>
+                    {% else %}
+                    <!-- shown instead of the list when nobody is assigned -->
+                    <div class="card-body text-center text-muted py-3">
+                        <p class="mb-0 small">Nobody is assigned yet.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <!-- ==================== SIDE NOTE ==================== -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm bg-light border-0">
+                    <div class="card-body">
+                        <h6 class="font-weight-bold">A few notes</h6>
+                        <ul class="small text-muted mb-0 pl-3">
+                            <li class="mb-2">The owner is set automatically &mdash; it&rsquo;s whoever creates the task.</li>
+                            <li class="mb-2">Completion time is recorded when the status changes to Completed.</li>
+                            <li>Assignments save separately, so you can add or remove people without re-saving the task.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
